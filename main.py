@@ -35,12 +35,12 @@ def get_upload_url(
         'v': '5.131',
         'extended': '1'
     }
-    vk_group = requests.get(
+    response = requests.get(
         url_vk,
         params=payload)
-    vk_group.raise_for_status()
-    vk_group = vk_group.json()
-    return vk_group['response']['upload_url']
+    response.raise_for_status()
+    response = response .json()
+    return response['response']['upload_url']
 
 
 def upload_image(upload_url):
