@@ -116,9 +116,9 @@ if __name__ == '__main__':
     load_dotenv()
     env_path = Path('.') / '.env'
     load_dotenv(dotenv_path=env_path)
-    client_id = os.getenv('client_id')
-    access_token = os.getenv('access_token')
-    group_id = os.getenv('group_id')
+    client_id = os.getenv('CLIENT_ID')
+    access_token = os.getenv('ACCESS_TOKEN')
+    group_id = os.getenv('GROUP_ID')
     num = identify_the_latest_comic(url='https://xkcd.com/info.0.json')
     id_comic = random.randint(1, num)
     url = f'https://xkcd.com/{id_comic}/info.0.json'
