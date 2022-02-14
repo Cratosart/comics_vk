@@ -20,12 +20,8 @@ def get_comics(url):
     comics = requests.get(url)
     comics.raise_for_status()
     comics = comics.json()
-    for key, value in comics.items():
-        if key == 'img':
-            image_url = value
-    for key, value in comics.items():
-        if key == 'alt':
-            comments = value
+    image_url = comics.get('img', None)
+    comments = comics.get('alt', None)
     return image_url, comments
 
 
@@ -89,11 +85,8 @@ def save_vk_photo(
     response.raise_for_status()
     params = response.json()['response']
     for element in params:
-        for key, value in element.items():
-            if key == 'owner_id':
-                owner_id = value
-            if key == 'id':
-                media_id = value
+        owner_id = element.get('owner_id', None)
+        media_id = element.get('id', None)
     return owner_id, media_id
 
 
@@ -118,8 +111,6 @@ def post_wall_vk(
 
 if __name__ == '__main__':
     load_dotenv()
-    env_path = Path('.') / '.env'
-    load_dotenv(dotenv_path=env_path)
     client_id = os.getenv('CLIENT_ID')
     access_token = os.getenv('ACCESS_TOKEN')
     group_id = os.getenv('GROUP_ID')
