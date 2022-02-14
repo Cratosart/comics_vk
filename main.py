@@ -41,6 +41,8 @@ def get_upload_url(
         params=payload)
     response.raise_for_status()
     response = response .json()
+    if 'error' in response:
+        raise requests.exceptions.HTTPError(response['error']['error_msg'])
     return response['response']['upload_url']
 
 
@@ -65,8 +67,6 @@ def save_image(url):
     filename = 'image'
     path = f'./{images_path}/{filename}.png'
     urllib.request.urlretrieve(url, path)
-    raise ValueError
-
 
 
 def save_vk_photo(
@@ -92,6 +92,8 @@ def save_vk_photo(
     for element in identifiers:
         owner_id = element.get('owner_id', None)
         media_id = element.get('id', None)
+    if 'error' in response:
+        raise requests.exceptions.HTTPError(response['error']['error_msg'])
     return owner_id, media_id
 
 
@@ -112,7 +114,8 @@ def post_wall_vk(
     url_wall = 'https://api.vk.com/method/wall.post'
     response = requests.post(url_wall, params=payload)
     response.raise_for_status()
-
+    if 'error' in response:
+        raise requests.exceptions.HTTPError(response['error']['error_msg'])
 
 if __name__ == '__main__':
     try:
