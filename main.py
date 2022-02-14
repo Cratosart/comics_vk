@@ -85,8 +85,8 @@ def save_vk_photo(
         url_save_photo_vk,
         params=payload)
     response.raise_for_status()
-    params = response.json()['response']
-    for element in params:
+    identifiers = response.json()['response']
+    for element in identifiers:
         owner_id = element.get('owner_id', None)
         media_id = element.get('id', None)
     return owner_id, media_id
