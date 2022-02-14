@@ -16,7 +16,8 @@ def identify_the_latest_comic(url):
     return comics['num']
 
 
-def get_comics(url):
+def get_comics(id_comic):
+    url = f'https://xkcd.com/{id_comic}/info.0.json'
     comics = requests.get(url)
     comics.raise_for_status()
     comics = comics.json()
@@ -26,7 +27,6 @@ def get_comics(url):
 
 
 def get_upload_url(
-        url_vk,
         access_token,
         group_id):
     payload = {
@@ -35,6 +35,7 @@ def get_upload_url(
         'v': '5.131',
         'extended': '1'
     }
+    url_vk = 'https://api.vk.com/method/photos.getWallUploadServer'
     response = requests.get(
         url_vk,
         params=payload)
@@ -67,7 +68,6 @@ def save_image(url):
 
 
 def save_vk_photo(
-        url_save_photo_vk,
         photo,
         access_token,
         server,
@@ -81,6 +81,7 @@ def save_vk_photo(
         'hash': hash,
         'v': '5.131'
     }
+    url_save_photo_vk = 'https://api.vk.com/method/photos.saveWallPhoto'
     response = requests.post(
         url_save_photo_vk,
         params=payload)
@@ -93,7 +94,6 @@ def save_vk_photo(
 
 
 def post_wall_vk(
-        url_wall,
         group_id,
         access_token,
         owner_id,
@@ -107,6 +107,7 @@ def post_wall_vk(
         'message': comments,
         'v': '5.131'
     }
+    url_wall = 'https://api.vk.com/method/wall.post'
     response = requests.post(url_wall, params=payload)
     response.raise_for_status()
 
@@ -118,22 +119,16 @@ if __name__ == '__main__':
     group_id = os.getenv('GROUP_ID')
     num = identify_the_latest_comic(url='https://xkcd.com/info.0.json')
     id_comic = random.randint(1, num)
-    url = f'https://xkcd.com/{id_comic}/info.0.json'
-    url_vk = 'https://api.vk.com/method/photos.getWallUploadServer'
-    upload_url = get_upload_url(url_vk, access_token, group_id)
-    url_save_photo_vk = 'https://api.vk.com/method/photos.saveWallPhoto'
-    image_url, comments = get_comics(url)
+    upload_url = get_upload_url(access_token, group_id)
+    image_url, comments = get_comics(id_comic)
     save_image(image_url)
     photo, server, hash = upload_image(upload_url)
     owner_id, media_id = save_vk_photo(
-        url_save_photo_vk,
         photo,
         access_token,
         server,
         group_id, hash)
-    url_wall = 'https://api.vk.com/method/wall.post'
     post_wall_vk(
-        url_wall,
         group_id,
         access_token,
         owner_id,
