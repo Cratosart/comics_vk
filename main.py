@@ -65,6 +65,8 @@ def save_image(url):
     filename = 'image'
     path = f'./{images_path}/{filename}.png'
     urllib.request.urlretrieve(url, path)
+    raise ValueError
+
 
 
 def save_vk_photo(
@@ -113,25 +115,27 @@ def post_wall_vk(
 
 
 if __name__ == '__main__':
-    load_dotenv()
-    client_id = os.getenv('CLIENT_ID')
-    access_token = os.getenv('ACCESS_TOKEN')
-    group_id = os.getenv('GROUP_ID')
-    num = identify_the_latest_comic(url='https://xkcd.com/info.0.json')
-    id_comic = random.randint(1, num)
-    upload_url = get_upload_url(access_token, group_id)
-    image_url, comments = get_comics(id_comic)
-    save_image(image_url)
-    photo, server, hash = upload_image(upload_url)
-    owner_id, media_id = save_vk_photo(
-        photo,
-        access_token,
-        server,
-        group_id, hash)
-    post_wall_vk(
-        group_id,
-        access_token,
-        owner_id,
-        media_id,
-        comments)
-    os.remove('./images_comics/image.png')
+    try:
+        load_dotenv()
+        client_id = os.getenv('CLIENT_ID')
+        access_token = os.getenv('ACCESS_TOKEN')
+        group_id = os.getenv('GROUP_ID')
+        num = identify_the_latest_comic(url='https://xkcd.com/info.0.json')
+        id_comic = random.randint(1, num)
+        upload_url = get_upload_url(access_token, group_id)
+        image_url, comments = get_comics(id_comic)
+        save_image(image_url)
+        photo, server, hash = upload_image(upload_url)
+        owner_id, media_id = save_vk_photo(
+            photo,
+            access_token,
+            server,
+            group_id, hash)
+        post_wall_vk(
+            group_id,
+            access_token,
+            owner_id,
+            media_id,
+            comments)
+    finally:
+        os.remove('./images_comics/image.png')
