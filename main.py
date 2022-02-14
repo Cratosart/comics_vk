@@ -12,16 +12,18 @@ from pathlib import Path
 def identify_the_latest_comic(url):
     comics = requests.get(url)
     comics.raise_for_status()
-    return comics.json()['num']
+    comics = comics.json()
+    return comics['num']
 
 
 def get_comics(url):
     comics = requests.get(url)
     comics.raise_for_status()
-    for key, value in comics.json().items():
+    comics = comics.json()
+    for key, value in comics.items():
         if key == 'img':
             image_url = value
-    for key, value in comics.json().items():
+    for key, value in comics.items():
         if key == 'alt':
             comments = value
     return image_url, comments
@@ -41,7 +43,8 @@ def get_upload_url(
         url_vk,
         params=payload)
     vk_group.raise_for_status()
-    return vk_group.json()['response']['upload_url']
+    vk_group = vk_group.json()
+    return vk_group['response']['upload_url']
 
 
 def upload_image(upload_url):
@@ -52,9 +55,10 @@ def upload_image(upload_url):
         }
         response = requests.post(url, files=files)
         response.raise_for_status()
-        return response.json()['photo'], \
-            response.json()['server'], \
-            response.json()['hash']
+        response = response.json()
+        return response['photo'], \
+            response['server'], \
+            response['hash']
 
 
 def save_image(url):
