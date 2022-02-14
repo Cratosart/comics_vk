@@ -44,7 +44,8 @@ def get_upload_url(
 
 
 def upload_image(upload_url):
-    with open('./images_comics/test.png', 'rb') as file:
+    path = './images_comics/image.png'
+    with open(path, 'rb') as file:
         url = upload_url
         files = {
             'photo': file,
@@ -60,8 +61,9 @@ def upload_image(upload_url):
 def save_image(url):
     images_path = 'images_comics'
     os.makedirs(images_path, exist_ok=True)
-    filename = 'test'
-    urllib.request.urlretrieve(url, f'./{images_path}/{filename}.png')
+    filename = 'image'
+    path = f'./{images_path}/{filename}.png'
+    urllib.request.urlretrieve(url, path)
 
 
 def save_vk_photo(
@@ -137,4 +139,4 @@ if __name__ == '__main__':
         owner_id,
         media_id,
         comments)
-    os.remove('./images_comics/test.png')
+    os.remove('./images_comics/image.png')
