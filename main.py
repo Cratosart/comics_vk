@@ -71,13 +71,13 @@ def save_vk_photo(
         access_token,
         server,
         group_id,
-        hash):
+        hash_img):
     payload = {
         'access_token': access_token,
         'group_id': group_id,
         'photo': photo,
         'server': server,
-        'hash': hash,
+        'hash': hash_img,
         'v': '5.131'
     }
     url_save_photo_vk = 'https://api.vk.com/method/photos.saveWallPhoto'
@@ -127,12 +127,12 @@ if __name__ == '__main__':
             upload_url = get_upload_url(access_token, group_id)
             image_url, comments = get_comics(id_comic)
             save_image(image_url, images_path, filename)
-            photo, server, hash = upload_image(upload_url, f'{images_path}/{filename}')
+            photo, server, hash_img = upload_image(upload_url, f'{images_path}/{filename}')
             owner_id, media_id = save_vk_photo(
                 photo,
                 access_token,
                 server,
-                group_id, hash)
+                group_id, hash_img)
             post_wall_vk(
                 group_id,
                 access_token,
