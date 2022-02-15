@@ -56,6 +56,8 @@ def upload_image(upload_url):
         response = requests.post(url, files=files)
         response.raise_for_status()
         response = response.json()
+        if 'error' in response:
+            raise requests.exceptions.HTTPError(response['error']['error_msg'])
         return response['photo'], \
             response['server'], \
             response['hash']
