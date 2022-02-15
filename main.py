@@ -26,9 +26,7 @@ def get_comics(id_comic):
     return image_url, comments
 
 
-def get_upload_url(
-        access_token,
-        group_id):
+def get_upload_url(access_token, group_id):
     payload = {
         'access_token': access_token,
         'group_id': group_id,
@@ -127,7 +125,10 @@ if __name__ == '__main__':
             upload_url = get_upload_url(access_token, group_id)
             image_url, comments = get_comics(id_comic)
             save_image(image_url, images_path, filename)
-            photo, server, hash_img = upload_image(upload_url, f'{images_path}/{filename}')
+            photo, server, hash_img = upload_image(
+                upload_url,
+                f'{images_path}/{filename}'
+                )
             owner_id, media_id = save_vk_photo(
                 photo,
                 access_token,
