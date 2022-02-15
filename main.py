@@ -46,14 +46,12 @@ def get_upload_url(
     return response['response']['upload_url']
 
 
-def upload_image(upload_url):
-    path = './images_comics/image.png'
+def upload_image(upload_url, path):
     with open(path, 'rb') as file:
-        url = upload_url
         files = {
             'photo': file,
         }
-        response = requests.post(url, files=files)
+        response = requests.post(upload_url, files=files)
         response.raise_for_status()
         response = response.json()
         if 'error' in response:
@@ -63,12 +61,9 @@ def upload_image(upload_url):
             response['hash']
 
 
-def save_image(url):
-    images_path = 'images_comics'
+def save_image(url, images_path, filename):
     os.makedirs(images_path, exist_ok=True)
-    filename = 'image'
-    path = f'./{images_path}/{filename}.png'
-    urllib.request.urlretrieve(url, path)
+    urllib.request.urlretrieve(url, f'{images_path}/{filename}')
 
 
 def save_vk_photo(
@@ -92,8 +87,8 @@ def save_vk_photo(
     response.raise_for_status()
     identifiers = response.json()['response']
     for element in identifiers:
-        owner_id = element.get('owner_id', None)
-        media_id = element.get('id', None)
+        owner_id = element.get('owner_id')
+        media_id = element.get('id')
     if 'error' in response:
         raise requests.exceptions.HTTPError(response['error']['error_msg'])
     return owner_id, media_id
@@ -120,27 +115,29 @@ def post_wall_vk(
         raise requests.exceptions.HTTPError(response['error']['error_msg'])
 
 if __name__ == '__main__':
-    try:
         load_dotenv()
         client_id = os.getenv('CLIENT_ID')
         access_token = os.getenv('ACCESS_TOKEN')
         group_id = os.getenv('GROUP_ID')
+        images_path = './images_comics'
+        filename = 'image.png'
         num = identify_the_latest_comic(url='https://xkcd.com/info.0.json')
         id_comic = random.randint(1, num)
-        upload_url = get_upload_url(access_token, group_id)
-        image_url, comments = get_comics(id_comic)
-        save_image(image_url)
-        photo, server, hash = upload_image(upload_url)
-        owner_id, media_id = save_vk_photo(
-            photo,
-            access_token,
-            server,
-            group_id, hash)
-        post_wall_vk(
-            group_id,
-            access_token,
-            owner_id,
-            media_id,
-            comments)
-    finally:
-        os.remove('./images_comics/image.png')
+        try:
+            upload_url = get_upload_url(access_token, group_id)
+            image_url, comments = get_comics(id_comic)
+            save_image(image_url, images_path, filename)
+            photo, server, hash = upload_image(upload_url, f'{images_path}/{filename}')
+            owner_id, media_id = save_vk_photo(
+                photo,
+                access_token,
+                server,
+                group_id, hash)
+            post_wall_vk(
+                group_id,
+                access_token,
+                owner_id,
+                media_id,
+                comments)
+        finally:
+            os.remove(f'{images_path}/{filename}')
