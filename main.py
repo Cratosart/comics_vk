@@ -39,8 +39,7 @@ def get_upload_url(access_token, group_id):
         params=payload)
     response.raise_for_status()
     response = response .json()
-    if 'error' in response:
-        raise requests.exceptions.HTTPError(response['error']['error_msg'])
+    check_vk_status(response)
     return response['response']['upload_url']
 
 
@@ -52,8 +51,7 @@ def upload_image(upload_url, path):
         response = requests.post(upload_url, files=files)
     response.raise_for_status()
     response = response.json()
-    if 'error' in response:
-        raise requests.exceptions.HTTPError(response['error']['error_msg'])
+    check_vk_status(response)
     return response['photo'], \
         response['server'], \
         response['hash']
@@ -86,8 +84,7 @@ def save_vk_photo(
     identifiers = response.json()['response'][0]
     owner_id = identifiers.get('owner_id')
     media_id = identifiers.get('id')
-    if 'error' in response:
-        raise requests.exceptions.HTTPError(response['error']['error_msg'])
+    check_vk_status(response)
     return owner_id, media_id
 
 
@@ -108,8 +105,12 @@ def post_wall_vk(
     url_wall = 'https://api.vk.com/method/wall.post'
     response = requests.post(url_wall, params=payload)
     response.raise_for_status()
+    check_vk_status(response)
+
+def check_vk_status(response):
     if 'error' in response:
         raise requests.exceptions.HTTPError(response['error']['error_msg'])
+
 
 if __name__ == '__main__':
         load_dotenv()
