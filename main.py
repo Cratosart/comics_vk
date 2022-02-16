@@ -21,8 +21,8 @@ def get_comics(id_comic):
     comics = requests.get(url)
     comics.raise_for_status()
     comics = comics.json()
-    image_url = comics.get('img', None)
-    comments = comics.get('alt', None)
+    image_url = comics.get('img')
+    comments = comics.get('alt')
     return image_url, comments
 
 
@@ -83,10 +83,9 @@ def save_vk_photo(
         url_save_photo_vk,
         params=payload)
     response.raise_for_status()
-    identifiers = response.json()['response']
-    for element in identifiers:
-        owner_id = element.get('owner_id')
-        media_id = element.get('id')
+    identifiers = response.json()['response'][0]
+    owner_id = identifiers.get('owner_id')
+    media_id = identifiers.get('id')
     if 'error' in response:
         raise requests.exceptions.HTTPError(response['error']['error_msg'])
     return owner_id, media_id
