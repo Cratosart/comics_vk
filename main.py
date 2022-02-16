@@ -50,13 +50,13 @@ def upload_image(upload_url, path):
             'photo': file,
         }
         response = requests.post(upload_url, files=files)
-        response.raise_for_status()
-        response = response.json()
-        if 'error' in response:
-            raise requests.exceptions.HTTPError(response['error']['error_msg'])
-        return response['photo'], \
-            response['server'], \
-            response['hash']
+    response.raise_for_status()
+    response = response.json()
+    if 'error' in response:
+        raise requests.exceptions.HTTPError(response['error']['error_msg'])
+    return response['photo'], \
+        response['server'], \
+        response['hash']
 
 
 def save_image(url, images_path, filename):
