@@ -38,16 +38,14 @@ def get_upload_url(access_token, group_id):
         url_vk,
         params=payload)
     response.raise_for_status()
-    response = response .json()
+    response = response.json()
     check_vk_status(response)
     return response['response']['upload_url']
 
 
 def upload_image(upload_url, path):
     with open(path, 'rb') as file:
-        files = {
-            'photo': file,
-        }
+        files = {'photo': file}
         response = requests.post(upload_url, files=files)
     response.raise_for_status()
     response = response.json()
@@ -62,12 +60,7 @@ def save_image(url, images_path, filename):
     urllib.request.urlretrieve(url, f'{images_path}/{filename}')
 
 
-def save_vk_photo(
-        photo,
-        access_token,
-        server,
-        group_id,
-        hash_img):
+def save_vk_photo(photo, access_token, server, group_id, hash_img):
     payload = {
         'access_token': access_token,
         'group_id': group_id,
@@ -77,9 +70,7 @@ def save_vk_photo(
         'v': '5.131'
     }
     url_save_photo_vk = 'https://api.vk.com/method/photos.saveWallPhoto'
-    response = requests.post(
-        url_save_photo_vk,
-        params=payload)
+    response = requests.post(url_save_photo_vk, params=payload)
     response.raise_for_status()
     identifiers = response.json()['response'][0]
     owner_id = identifiers.get('owner_id')
