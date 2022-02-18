@@ -107,6 +107,7 @@ def post_wall_vk(
     response.raise_for_status()
     check_vk_status(response)
 
+
 def check_vk_status(response):
     if 'error' in response:
         raise requests.exceptions.HTTPError(response['error']['error_msg'])
