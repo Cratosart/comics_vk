@@ -38,9 +38,9 @@ def get_upload_url(access_token, group_id):
         url_vk,
         params=payload)
     response.raise_for_status()
-    response = response.json()
-    check_vk_status(response)
-    return response['response']['upload_url']
+    upload_url = response.json()
+    check_vk_status(upload_url)
+    return upload_url['response']['upload_url']
 
 
 def upload_image(upload_url, path):
@@ -48,11 +48,11 @@ def upload_image(upload_url, path):
         files = {'photo': file}
         response = requests.post(upload_url, files=files)
     response.raise_for_status()
-    response = response.json()
-    check_vk_status(response)
-    return response['photo'], \
-        response['server'], \
-        response['hash']
+    image_info = response.json()
+    check_vk_status(image_info)
+    return image_info['photo'], \
+        image_info['server'], \
+        image_info['hash']
 
 
 def save_image(url, images_path, filename):
