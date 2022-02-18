@@ -1,9 +1,9 @@
-import requests
 import os
+import random
+import requests
 import urllib
 import urllib.parse
 import urllib.request
-import random
 
 from dotenv import load_dotenv
 from pathlib import Path
