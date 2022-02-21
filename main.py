@@ -75,7 +75,7 @@ def save_vk_photo(photo, access_token, server, group_id, hash_img):
     identifiers = response.json()['response'][0]
     owner_id = identifiers.get('owner_id')
     media_id = identifiers.get('id')
-    check_vk_status(response)
+    check_vk_status(response.json())
     return owner_id, media_id
 
 
@@ -96,7 +96,7 @@ def post_wall_vk(
     url_wall = 'https://api.vk.com/method/wall.post'
     response = requests.post(url_wall, params=payload)
     response.raise_for_status()
-    check_vk_status(response)
+    check_vk_status(response.json())
 
 
 def check_vk_status(response):
